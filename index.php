@@ -1,5 +1,5 @@
 <?php
-
+/* @var $config array */
 require 'config.php';
 $pokemondataurl = 'https://raw.githubusercontent.com/WatWowMap/Masterfile-Generator/master/master-latest.json';
 
@@ -136,8 +136,7 @@ if (!empty($events)) {
     $html .= 'Other stats:<br>';
     $eventdata = '';
     if (!empty($_REQUEST['e'])) {
-        $eventdata .= '<a href="/stats">Live</a>';
-
+        $eventdata .= '<a href="?">Live</a>';
     }
     foreach ($events as $key => $event) {
         if ((!empty($_REQUEST['e']) AND $_REQUEST['e'] == $key) or empty($event['datefrom']) or empty($event['dateto'])) {
@@ -268,7 +267,6 @@ $html .= "
       filter = input.value.toUpperCase();
       table = document.getElementById('statstable');
       tr = table.getElementsByTagName('tr');
-
       // Loop through all table rows, and hide those who don't match the search query
       for (i = 0; i < tr.length; i++) {
         td = tr[i].getElementsByTagName('td')[1];
@@ -282,9 +280,23 @@ $html .= "
         }
       }
     }
-  }
-}
-searchpokemon()
+    searchpokemon();
+    function setCookie(c_name, value, exdays) {
+        var exdate = new Date();
+        exdate.setDate(exdate.getDate() + exdays);
+        var c_value = escape(value) + ((exdays == null) ? '' : '; expires=' + exdate.toUTCString()) +';SameSite=Lax; path=/stats';
+        document.cookie = c_name + '=' + c_value;
+    }
+
+    $('#toggleTheme').on('change', function() {
+        if($(this).is(':checked')) {
+            setCookie('theme','dark',1000);
+            $('.dark-changer').addClass('dark');
+        } else {
+            setCookie('theme','',0);
+            $('.dark-changer').removeClass('dark')
+        }
+    });
 </script>";
 $html .= '
 </body>
